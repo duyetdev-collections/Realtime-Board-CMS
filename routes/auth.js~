@@ -1,0 +1,44 @@
+module.exports = function(app, config, db, passport, TwitterStrategy) {
+    if (config.domain.port) {
+        config.domain.port = ":" + config.domain.port;
+    }
+
+	passport.use(new LocalStrategy(
+		function(username, password, done) {
+			db.User.findOne({ username: username }, function (err, user) {
+				if (err) { return done(err); }
+				if (!user) { return done(null, false); }
+				if (!user.verifyPassword(password)) { return done(null, false); }
+				return done(null, user);
+			});
+		}
+	));
+
+	passport.serializeUser(function(user, done) {
+		done(null, user.uid);
+	});
+
+	passport.deserializeUser(function(uid, done) {
+		db.User.findOne({uid: uid}, function (err, user) {
+			done(err, user);
+		});
+	});
+
+	app.post(
+		config.public.url.login, 
+		passport.authenticate('local', { failureRedirect: '/login' }),
+		function (req, res) {
+			// Login success 
+			res.redirect(config.domain.host + config.domain.port + config.public.url.admin);
+	});
+
+    app.get(config.public.url.login, passport.authenticate('twitter'), function(req, res){
+        // The request will be redirected to Twitter for authentication, so this
+        // function will not be called.
+        console.log(req.user.username);
+    });
+
+    app.get(config.public.url.authTwitterCallback, passport.authenticate('twitter', { failureRedirect: '/login' }), function(req, res) {
+        res.redirect(config.domain.host + config.domain.port + config.public.url.admin);
+    });
+};

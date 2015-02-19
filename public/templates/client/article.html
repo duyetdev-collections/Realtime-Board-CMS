@@ -1,0 +1,21 @@
+<div class="margin_bottom_medium row">
+    <div class="col10">
+        <h2 data-label="title" class="text bold"><a data-label="title" href="<%= slug %>"><%= title %></a></h2>
+        <small>
+            <i class="icon-calendar"></i> <abbr class="timeago" title="<%= postDate %>"><%= postDate %></abbr> by <span class="text bold"><%= author.username %></span> @ <span data-label="category" class="text bold"><a href="<%= category %>"><%= category %></a>
+        </small>
+    </div>
+    <div class="col2 text right desktop">
+        <div>
+            <img src="<%= author.image %>" class="center border rad_circle" />
+        </div>
+        <div class="text center margin_top_medium">
+            <div>Views</div>
+            <div class="text bold"><%= views %></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div data-label="content" class="col12"><%= content %></div>
+</div>
